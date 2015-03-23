@@ -8,7 +8,7 @@ d-fens GmbH, General-Guisan-Strasse 6, CH-6300 Zug, Switzerland
 This Graylog Filter Plugin lets you validate data type and value ranges on GELF message properties.
 
 
-You can [download the binary](https://drone.io/github.com/dfch/biz.dfch.j.graylog.plugin.filter.metricsvalidationfiles) [![Build Status](https://drone.io/github.com/dfch/biz.dfch.j.graylog.plugin.filter.metricsvalidation/status.png)](https://drone.io/github.com/dfch/biz.dfch.j.graylog.plugin.filter.metricsvalidation/latest) from our [drone.io](https://drone.io/github.com/dfch) account.
+You can [download the binary](https://drone.io/github.com/dfch/biz.dfch.j.graylog.plugin.filter.metricsvalidation/files) [![Build Status](https://drone.io/github.com/dfch/biz.dfch.j.graylog.plugin.filter.metricsvalidation/status.png)](https://drone.io/github.com/dfch/biz.dfch.j.graylog.plugin.filter.metricsvalidation/latest) from our [drone.io](https://drone.io/github.com/dfch) account.
 
 Getting started for users
 -------------------------
