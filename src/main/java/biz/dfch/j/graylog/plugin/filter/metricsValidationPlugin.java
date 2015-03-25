@@ -1,10 +1,11 @@
 package biz.dfch.j.graylog.plugin.filter;
 
-        import java.util.Arrays;
-        import java.util.Collection;
-        import org.graylog2.plugin.Plugin;
-        import org.graylog2.plugin.PluginMetaData;
-        import org.graylog2.plugin.PluginModule;
+import org.graylog2.plugin.Plugin;
+import org.graylog2.plugin.PluginMetaData;
+import org.graylog2.plugin.PluginModule;
+
+import java.util.Arrays;
+import java.util.Collection;
 
 /**
  * Implement the Plugin interface here.

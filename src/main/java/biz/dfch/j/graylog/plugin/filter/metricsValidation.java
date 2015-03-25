@@ -1,26 +1,22 @@
 package biz.dfch.j.graylog.plugin.filter;
 
-import java.io.*;
+import org.apache.commons.io.FilenameUtils;
+import org.graylog2.plugin.Message;
+import org.graylog2.plugin.configuration.Configuration;
+import org.graylog2.plugin.filters.MessageFilter;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.io.FileReader;
+import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.security.CodeSource;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Set;
 import java.util.concurrent.atomic.AtomicBoolean;
-import javax.script.ScriptContext;
-import javax.script.ScriptEngine;
-import javax.script.ScriptEngineManager;
-
-import org.apache.commons.io.FilenameUtils;
-import org.graylog2.plugin.configuration.Configuration;
-import org.graylog2.plugin.Message;
-import org.graylog2.plugin.filters.*;
-
-import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * This is the plugin. Your class should implement one of the existing plugin
@@ -34,23 +30,18 @@ public class metricsValidation implements MessageFilter
     private static final String DF_PLUGIN_PRIORITY = "DF_PLUGIN_PRIORITY";
     private static final String DF_PLUGIN_DROP_MESSAGE = "DF_PLUGIN_DROP_MESSAGE";
     private static final String DF_PLUGIN_DISABLED = "DF_PLUGIN_DISABLED";
-    private static final String DF_PLUGIN_METRICS = "DF_PLUGIN_METRICS";
 
     // for performance reasons these configuration items have internal variables
     // DF_PLUGIN_DISABLED, DF_PLUGIN_DROP_MESSAGE
-    private final AtomicBoolean isRunning = new AtomicBoolean(false);
-    private final AtomicBoolean dropMessage = new AtomicBoolean(false);
+    private static final AtomicBoolean isRunning = new AtomicBoolean(false);
+    private static final AtomicBoolean dropMessage = new AtomicBoolean(false);
     private Configuration configuration;
     private String configurationFileName;
 
-    private ScriptEngineManager scriptEngineManager = new ScriptEngineManager();
-    private ScriptEngine scriptEngine;
-    private ScriptContext scriptContext;
-    private File file;
-
     private static final Logger LOG = LoggerFactory.getLogger(metricsValidation.class);
 
-    public metricsValidation() throws IOException, URISyntaxException
+    public metricsValidation() 
+            throws IOException, URISyntaxException
     {
         try
         {
@@ -86,14 +77,14 @@ public class metricsValidation implements MessageFilter
             String pluginPriority = (String) jsonObject.get(DF_PLUGIN_PRIORITY);
             Boolean pluginDropMessage = (Boolean) jsonObject.get(DF_PLUGIN_DROP_MESSAGE);
             Boolean pluginDisabled = (Boolean) jsonObject.get(DF_PLUGIN_DISABLED);
-            metrics = (HashMap) jsonObject.get("metrics");
-            String fieldName = "cpu.average";
-            Set<String> keys = metrics.keySet();
-            for(String key : keys)
-            {
-                Map metric = (Map) metrics.get(key);
-                LOG.info(String.format("%s [type %s] [range %s .. %s]", key, metric.get("type").toString(), metric.get("minValue").toString(), metric.get("maxValue").toString()));
-            }
+//            metrics = (HashMap) jsonObject.get("metrics");
+//            String fieldName = "cpu.average";
+//            Set<String> keys = metrics.keySet();
+//            for(String key : keys)
+//            {
+//                Map metric = (Map) metrics.get(key);
+//                LOG.info(String.format("%s [type %s] [range %s .. %s]", key, metric.get("type").toString(), metric.get("minValue").toString(), metric.get("maxValue").toString()));
+//            }
             // set configuration
             Map<String, Object> map = new HashMap<>();
             map.put(DF_PLUGIN_PRIORITY, pluginPriority);
@@ -180,7 +171,7 @@ public class metricsValidation implements MessageFilter
                             {
                                 LOG.error(String.format("%s %s: Parameter validation FAILED. [ %d < %d || %d > %d ]", msg.getId(), fieldName, fieldValue, minValue, fieldValue, maxValue));
                                 return true;
-                            };
+                            }
                             continue;
                         }
                         case "number":
@@ -191,9 +182,9 @@ public class metricsValidation implements MessageFilter
                             double maxValue = (double) metric.get("maxValue");
                             if(fieldValue < minValue || fieldValue > maxValue)
                             {
-                                LOG.error(String.format("%s %s: Parameter validation FAILED. [ %d < %d || %d > %d ]", msg.getId(), fieldName, fieldValue, minValue, fieldValue, maxValue));
+                                LOG.error(String.format("%s %s: Parameter validation FAILED. [ %f < %f || %f > %f ]", msg.getId(), fieldName, fieldValue, minValue, fieldValue, maxValue));
                                 return true;
-                            };
+                            }
                             continue;
                         default:
                             continue;
